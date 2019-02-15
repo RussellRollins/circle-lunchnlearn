@@ -7,18 +7,41 @@ jobs:
         - checkout
         - run: echo "Hello Build"
         - run: sleep 5
-    test:
+
+    testa:
       docker:
         - image: circleci/ruby:2.4.1
       steps:
         - checkout
-        - run: echo "Hello Test"
+        - run: echo "Hello Test A"
+        - run: sleep 5
+    testb:
+      docker:
+        - image: circleci/ruby:2.4.1
+      steps:
+        - checkout
+        - run: echo "Hello Test B"
+        - run: sleep 5
+
+    deploy:
+      docker:
+        - image: circleci/ruby:2.4.1
+      steps:
+        - checkout
+        - run: echo "Hello Deploy"
         - run: sleep 5
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - test:
+      - testa:
           requires:
             - build
+      - testb:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - testa
+            - testb
