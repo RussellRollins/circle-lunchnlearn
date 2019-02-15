@@ -5,15 +5,22 @@ jobs:
         - image: circleci/ruby:2.4.1
       steps:
         - checkout
-        - run: echo "Hello Build"
+        - run: mkdir -p my_workspace
+        - run: echo "Hello Build" > my_workspace/echo-output
         - run: sleep 5
+        - persist_to_workspace:
+            root: my_workspace
+            paths:
+              - echo-output
 
     testa:
       docker:
         - image: circleci/ruby:2.4.1
       steps:
-        - checkout
+        - attach_workspace:
+            at: my_workspace
         - run: echo "Hello Test A"
+        - run: cat my_workspace/echo-output
         - run: sleep 5
     testb:
       docker:
